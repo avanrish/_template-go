@@ -1,0 +1,18 @@
+version: "2"
+
+linters:
+  # The standard set (errcheck, govet, ineffassign, staticcheck, unused) plus
+  # security and correctness checks.
+  enable:
+    - bodyclose
+    - errorlint
+    - gosec
+    - noctx
+    - nilerr
+    - rowserrcheck
+    - sqlclosecheck
+
+formatters:
+  enable:
+    - gofmt
+    - goimports

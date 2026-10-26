@@ -1,0 +1,90 @@
+name: CI
+permissions:
+  contents: read
+on:
+  pull_request:
+  push:
+    branches: [main]
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: true
+jobs:
+  ci:
+    permissions:
+      contents: none
+    name: CI
+    needs: [test, lint, formatting, modules]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    if: always()
+    steps:
+      - name: Failed
+        run: exit 1
+        if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') || contains(needs.*.result, 'skipped')
+  test:
+    name: Test
+    strategy:
+      matrix:
+        os: ["ubuntu-latest", "windows-latest", "macos-latest"]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Setup
+        uses: $/.github/actions/setup
+      - name: Test
+        run: mise run test
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Setup
+        uses: $/.github/actions/setup
+      - name: Run golangci-lint
+        # LINT.IfChange(golangci_lint)
+        run: golangci-lint run --output.text.path=stdout --output.sarif.path=golangci-lint.sarif
+        # LINT.ThenChange(mise.toml:lint_task)
+      - name: Upload results to code scanning
+        # Public repos get code scanning automatically. Private repos can set
+        # ENABLE_CODE_SCANNING=true when GitHub code scanning is enabled.
+        if: ${{ !cancelled() && (github.event.repository.visibility == 'public' || vars.ENABLE_CODE_SCANNING == 'true') }}
+        uses: github/codeql-action/upload-sarif@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1
+        with:
+          sarif_file: golangci-lint.sarif
+  formatting:
+    name: Formatting
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Setup
+        uses: $/.github/actions/setup
+      - name: Check formatting
+        run: mise run check-fmt
+  modules:
+    name: Modules
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Setup
+        uses: $/.github/actions/setup
+      - name: Check go.mod tidiness and module integrity
+        run: mise run check-mod

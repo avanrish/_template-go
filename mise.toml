@@ -1,0 +1,53 @@
+[tools]
+# LINT.IfChange(go_version)
+go = "1.27.3"
+# LINT.ThenChange(go.mod:go_version)
+# LINT.IfChange(committed_version)
+committed = "1.1.11"
+# LINT.ThenChange(.github/workflows/committed.yaml:committed_version)
+git-cliff = "2.14.2"
+golangci-lint = "2.15.0"
+"go:golang.org/x/vuln/cmd/govulncheck" = { version = "1.9.0", depends = "go" }
+
+[tasks.fmt]
+description = "Format Go code"
+run = "golangci-lint fmt"
+
+# LINT.IfChange(lint_task)
+[tasks.lint]
+description = "Run golangci-lint and all checks"
+depends = ["check-fmt", "check-mod", "vulncheck"]
+run = "golangci-lint run"
+# LINT.ThenChange(
+#     AGENTS.md:commands,
+#     README.md:commands,
+#     .github/workflows/ci.yaml:golangci_lint,
+# )
+
+[tasks.check-fmt]
+description = "Check Go code formatting"
+run = "golangci-lint fmt --diff"
+
+[tasks.check-mod]
+description = "Check go.mod and go.sum are tidy and dependencies are untampered"
+run = ["go mod tidy -diff", "go mod verify"]
+
+[tasks.vulncheck]
+description = "Report known vulnerabilities in code paths the project calls"
+run = "govulncheck ./..."
+
+[tasks.test]
+description = "Run tests with the race detector"
+run = "go test -race ./..."
+
+[tasks.doc]
+description = "Browse the documentation locally in the pkg.go.dev style"
+run = "go doc -http"
+
+[tasks.check-commits]
+description = "Check that commits since main follow Conventional Commits"
+run = "committed main..HEAD"
+
+[tasks.changelog]
+description = "Regenerate CHANGELOG.md from commit messages"
+run = "git-cliff -o CHANGELOG.md"
