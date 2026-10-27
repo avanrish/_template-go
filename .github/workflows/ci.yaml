@@ -13,7 +13,7 @@ jobs:
     permissions:
       contents: none
     name: CI
-    needs: [test, lint, formatting, modules]
+    needs: [test, lint, formatting, modules, spelling, ifttt-lint]
     runs-on: ubuntu-latest
     timeout-minutes: 30
     if: always()
@@ -54,7 +54,7 @@ jobs:
       - name: Run golangci-lint
         # LINT.IfChange(golangci_lint)
         run: golangci-lint run --output.text.path=stdout --output.sarif.path=golangci-lint.sarif
-        # LINT.ThenChange(mise.toml:lint_task)
+        # LINT.ThenChange(//mise.toml:lint_task)
       - name: Upload results to code scanning
         # Public repos get code scanning automatically. Private repos can set
         # ENABLE_CODE_SCANNING=true when GitHub code scanning is enabled.
@@ -88,3 +88,37 @@ jobs:
         uses: $/.github/actions/setup
       - name: Check go.mod tidiness and module integrity
         run: mise run check-mod
+  spelling:
+    name: Spelling
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Setup
+        uses: $/.github/actions/setup
+      - name: Check spelling
+        run: typos
+  ifttt-lint:
+    name: ifttt-lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Setup
+        uses: $/.github/actions/setup
+      - name: Check co-changes across the PR's commits
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: ifttt-lint --vcs git --diff "${BASE_SHA}...${HEAD_SHA}"
+      - name: Check every directive's targets exist
+        if: github.event_name == 'push'
+        run: ifttt-lint --vcs git '**/*'
