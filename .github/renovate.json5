@@ -21,21 +21,6 @@
     minimumReleaseAge: null,
   },
   postUpdateOptions: ['gomodTidy'],
-  customManagers: [
-    {
-      customType: 'regex',
-      managerFilePatterns: [
-        '/^\\.github/actions/setup/action\\.yaml$/',
-      ],
-      matchStrings: [
-        'version:\\s*"(?<currentValue>\\d+\\.\\d+\\.\\d+)"\\s*# MISE_VERSION',
-      ],
-      depNameTemplate: 'mise',
-      packageNameTemplate: 'jdx/mise',
-      datasourceTemplate: 'github-releases',
-      extractVersionTemplate: '^v(?<version>.*)$',
-    },
-  ],
   packageRules: [
     {
       // go.mod and mise.toml pin the same Go version; update them together.
