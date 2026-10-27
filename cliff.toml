@@ -86,7 +86,7 @@ commit_parsers = [
   { message = "^revert", group = "<!-- 9 -->◀️ Revert" },
   { message = ".*", group = "<!-- 10 -->💼 Other" },
 ]
-# LINT.ThenChange(committed.toml:commit_types)
+# LINT.ThenChange(//committed.toml:commit_types)
 # Exclude commits that are not matched by any commit parser.
 filter_commits = false
 # Fail on a commit that is not matched by any commit parser.
