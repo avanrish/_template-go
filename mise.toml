@@ -5,7 +5,6 @@ go = "1.27.3"
 # LINT.IfChange(committed_version)
 committed = "1.1.11"
 # LINT.ThenChange(//.github/workflows/committed.yaml:committed_version)
-git-cliff = "2.14.2"
 golangci-lint = "2.15.0"
 "go:golang.org/x/vuln/cmd/govulncheck" = { version = "1.9.0", depends = "go" }
 
@@ -47,7 +46,3 @@ run = "go doc -http"
 [tasks.check-commits]
 description = "Check that commits since main follow Conventional Commits"
 run = "committed main..HEAD"
-
-[tasks.changelog]
-description = "Regenerate CHANGELOG.md from commit messages"
-run = "git-cliff -o CHANGELOG.md"

@@ -28,7 +28,6 @@ Run `mise install` to provision Go and the development tools pinned in `mise.tom
 <!-- LINT.IfChange(commit_subject) -->
 - Write commit messages as Conventional Commits with a capitalized subject of at most 50 characters (e.g. `feat: Add login`). Check them with `mise run check-commits`.
 <!-- LINT.ThenChange(//committed.toml:commit_subject) -->
-- `CHANGELOG.md` is generated from commit messages; regenerate it with `mise run changelog` instead of editing it.
 - Use narrow `LINT.IfChange` / `LINT.ThenChange` directives when duplicated cross-file content must stay in sync and cannot be eliminated.
   Write targets as repository-root paths starting with `//` (e.g. `//mise.toml:go_version`); ifttt-lint enforces them in CI.
 

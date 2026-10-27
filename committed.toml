@@ -3,9 +3,7 @@ style = "conventional"
 subject_capitalized = true
 subject_length = 50
 # LINT.ThenChange(//AGENTS.md:commit_subject)
-# The Conventional Commits types that cliff.toml groups: committed's default
-# list lacks build, ci and revert.
-# LINT.IfChange(commit_types)
+# committed's default list lacks build, ci and revert.
 allowed_types = [
   "build",
   "chore",
@@ -19,6 +17,5 @@ allowed_types = [
   "style",
   "test",
 ]
-# LINT.ThenChange(//cliff.toml:commit_types)
 ignore_author_re = "renovate"
 merge_commit = true
