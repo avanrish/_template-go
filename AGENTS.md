@@ -35,3 +35,7 @@ Run `mise install` to provision Go and the development tools pinned in `mise.tom
 ## Version control
 
 If a `.jj` directory exists in the repository root, default to using `jj` (Jujutsu) for version control; otherwise, use `git`.
+
+- Every commit on `main` must pass CI. Pull requests land as a squash or a merge commit, so a PR's own commits need not each pass.
+- Keep commits atomic: one responsibility each, with code, tests, and docs updated together. Put file renames in their own commit.
+- Squash pull requests by default. Use a merge commit only when the history is worth keeping, such as what was tried or how a bug was tracked down.
