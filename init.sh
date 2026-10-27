@@ -84,6 +84,8 @@ mv cmd/template-go "cmd/$name"
 find . -name '*.go' -not -path './.git/*' -not -path './.jj/*' -exec perl -pi -e \
   's{"template-go/}{"$ENV{INIT_MODULE}/}g; s/template-go/$ENV{INIT_NAME}/g' {} +
 perl -pi -e 's/\{\{ project \}\}/$ENV{INIT_NAME}/g; s/\{\{ description \}\}/$ENV{INIT_DESCRIPTION}/g' README.md AGENTS.md
+# Drop the template-only note from the README.
+perl -0pi -e 's/\n<!-- init\.sh:start -->\n.*?<!-- init\.sh:end -->\n//s' README.md
 
 rm -- "$0"
 
