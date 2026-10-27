@@ -1,1 +1,10 @@
+# Editor settings
 .idea/
+
+# Build output (e.g. go build -o bin/ ./cmd/...)
+/bin/
+*.exe
+*.test
+
+# Coverage profiles (e.g. go test -coverprofile=cover.out ./...)
+*.out
