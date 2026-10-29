@@ -4,6 +4,15 @@
 {{ description }}
 <!-- LINT.ThenChange(//README.md:project_header) -->
 
+<!-- init.sh:start -->
+## Template
+
+This repository is a project template; `init.sh` turns a copy into a real project and deletes this section.
+
+- Keep the `{{ project }}` and `{{ description }}` placeholders and the `template-go` name (module path, `cmd/template-go/`) as they are: `init.sh` substitutes them.
+- If you rename or move anything `init.sh` rewrites, update `init.sh` in the same change.
+<!-- init.sh:end -->
+
 ## Project structure
 
 <!-- LINT.IfChange(project_structure) -->
@@ -22,6 +31,9 @@ Run `mise install` to provision Go and the development tools pinned in `mise.tom
 - `mise run test` — tests with the race detector
 - `mise run doc` — browse the documentation locally in the pkg.go.dev style
 <!-- LINT.ThenChange(//README.md:commands, //mise.toml:lint_task) -->
+
+CI also runs checks that `mise run lint` does not: `typos`, `ifttt-lint`, and `gitleaks`. Their tools are pinned in `mise.ci.toml`; install them with `MISE_ENV=ci mise install`, then run `typos` and `ifttt-lint --diff 'main..@'` (`main...HEAD` with git) before pushing.
+Tests run on Linux, macOS, and Windows, so keep code and tests portable.
 
 ## Conventions
 
