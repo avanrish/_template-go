@@ -56,6 +56,9 @@
       matchManagers: [
         'github-actions',
       ],
+      matchDepNames: [
+        '!crate-ci/committed',
+      ],
       matchUpdateTypes: [
         'minor',
         'patch',
