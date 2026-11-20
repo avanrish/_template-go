@@ -33,6 +33,19 @@
       ],
     },
     {
+      // Keep the go.mod go directive in step with mise.toml; Renovate skips it by default.
+      matchManagers: [
+        'gomod',
+      ],
+      matchDepNames: [
+        'go',
+      ],
+      matchDepTypes: [
+        'golang',
+      ],
+      rangeStrategy: 'bump',
+    },
+    {
       groupName: 'committed',
       matchPackageNames: [
         'crate-ci/committed',
