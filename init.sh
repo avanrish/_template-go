@@ -133,7 +133,7 @@ perl -pi -e 's/^module template-go$/module $ENV{INIT_MODULE}/' go.mod
 mv cmd/template-go "cmd/$name"
 find . -name '*.go' -not -path './.git/*' -not -path './.jj/*' -exec perl -pi -e \
   's{"template-go/}{"$ENV{INIT_MODULE}/}g; s/template-go/$ENV{INIT_NAME}/g' {} +
-perl -pi -e 's/\{\{ project \}\}/$ENV{INIT_NAME}/g; s/\{\{ description \}\}/$ENV{INIT_DESCRIPTION}/g' README.md AGENTS.md
+perl -pi -e 's/\{\{ project \}\}/$ENV{INIT_NAME}/g; s/\{\{ description \}\}/$ENV{INIT_DESCRIPTION}/g' README.md
 # Drop the template-only notes from the README and AGENTS.md.
 perl -0pi -e 's/\n<!-- init\.sh:start -->\n.*?<!-- init\.sh:end -->\n//s' README.md AGENTS.md
 # Set the CI test matrix and drop the template's sync directives around it.
